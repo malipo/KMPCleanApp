@@ -7,9 +7,11 @@ import com.jetbrains.museumlist.domain.MuseumRepository
 import com.jetbrains.museumlist.domain.usecase.MuseumUseCase
 import com.jetbrains.museumlist.domain.usecase.MuseumUseCaseImpl
 import com.jetbrains.museumlist.presentation.MuseumViewModel
+import com.jetbrains.network.SharedViewModel.SharedViewModel
 import com.jetbrains.network.di.networkModule
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val dataModule = module {
@@ -21,6 +23,12 @@ val dataModule = module {
 
 val viewModelModule = module {
     factoryOf(::MuseumViewModel)
+    viewModel {MuseumViewModel(get())}
+}
+
+
+val sharedViewModelModule = module {
+    SharedViewModel { MuseumViewModel(get()) }
 }
 
 fun initKoin() {
@@ -28,6 +36,7 @@ fun initKoin() {
         modules(
             dataModule,
             viewModelModule,
+            sharedViewModelModule,
             networkModule
         )
     }

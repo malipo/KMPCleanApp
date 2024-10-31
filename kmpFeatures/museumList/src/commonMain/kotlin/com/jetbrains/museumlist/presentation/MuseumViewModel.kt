@@ -18,7 +18,7 @@ class MuseumViewModel(private val museumUseCase: MuseumUseCase) : ViewModel() {
         getMuseumList()
     }
 
-    private fun getMuseumList() {
+    fun getMuseumList() {
         viewModelScope.launch {
             val result = museumUseCase.invoke().first()
 

@@ -35,6 +35,8 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            api(libs.kotlinx.coroutines.test)
+            api(libs.koin.test)
         }
     }
 }

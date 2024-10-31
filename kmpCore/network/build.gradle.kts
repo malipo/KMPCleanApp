@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.ktor.auth)
             implementation(libs.koin.core)
             implementation(libs.aakira)
+            implementation(libs.androidx.lifecycle.viewmodel.ktx )
 
         }
         androidMain.dependencies {
