@@ -46,5 +46,6 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.coil.compose)
     implementation(projects.kmpFeatures.museumList)
+    implementation(projects.kmpCore.room)
 
 }

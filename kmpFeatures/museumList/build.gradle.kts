@@ -12,17 +12,8 @@ kotlin {
             }
         }
     }
-    
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "museumList"
-            isStatic = true
-        }
-    }
+
+
 
     sourceSets {
         commonMain.dependencies {
@@ -32,12 +23,16 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
             api(projects.kmpCore.network)
+
+            implementation(projects.kmpCore.room)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             api(libs.kotlinx.coroutines.test)
             api(libs.koin.test)
         }
+
     }
 }
 
