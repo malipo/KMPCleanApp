@@ -13,16 +13,16 @@ kotlin {
         }
     }
     
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "museumList"
-            isStatic = true
-        }
-    }
+//    listOf(
+//        iosX64(),
+//        iosArm64(),
+//        iosSimulatorArm64()
+//    ).forEach {
+//        it.binaries.framework {
+//            baseName = "museumList"
+//            isStatic = true
+//        }
+//    }
 
     sourceSets {
         commonMain.dependencies {
@@ -43,7 +43,7 @@ kotlin {
 
 android {
     namespace = "com.jetbrains.museumlist"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         minSdk = 24
     }

@@ -19,3 +19,5 @@ include(":androidApp")
 include(":shared")
 include(":kmpCore:network")
 include(":kmpFeatures:museumList")
+include(":tv")
+
