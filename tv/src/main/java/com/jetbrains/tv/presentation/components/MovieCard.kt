@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,45 +44,36 @@ import com.jetbrains.tv.extension.getDrawableIdByName
 @Composable
 fun MovieCard(
     movie: Movie,
+    isFocused: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
-    val focusRequester = remember { FocusRequester() }
-    val isFocused = remember { mutableStateOf(false) }
+    val progress = remember { mutableStateOf(movie.watchProgress) }
+    val showTrailer = remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier
             .defaultMinSize(minHeight = 100.dp)
             .aspectRatio(5f / 3f)
-            .focusRequester(focusRequester)
-            .focusable()
             .graphicsLayer(
-                scaleX = if (isFocused.value) 1.1f else 1f,
-                scaleY = if (isFocused.value) 1.1f else 1f,
+                scaleX = if (isFocused) 1.1f else 1f,
+                scaleY = if (isFocused) 1.1f else 1f
             )
             .onFocusChanged { state ->
-                isFocused.value = state.isFocused
-            }
-           ,
+                showTrailer.value = state.isFocused
+            },
         onClick = onClick
     ) {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .semantics {
-                    contentDescription = movie.title
-                }
-        ) {
+        Box(Modifier.fillMaxSize()) {
             val drawableId = LocalContext.current.getDrawableIdByName(movie.thumbnail)
             Image(
                 painter = painterResource(drawableId),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .blur(8.dp),
+                contentDescription = movie.title,
+                modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
 
+            // Gradient overlay
             val brush = Brush.verticalGradient(listOf(Color.Transparent, Color.Black), 0.75f)
             Text(
                 text = movie.title,
@@ -92,23 +85,33 @@ fun MovieCard(
                 style = MaterialTheme.typography.titleSmall,
                 color = Color.White
             )
+
+            // Watch progress indicator
+            LinearProgressIndicator(
+                progress = progress.value,
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .fillMaxWidth()
+                    .height(4.dp),
+                color = MaterialTheme.colorScheme.secondary
+            )
+
+            // Trailer preview overlay
+            if (showTrailer.value) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.6f))
+                        .padding(8.dp)
+                ) {
+                    Text(
+                        text = "Trailer Preview",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
         }
     }
-}
-
-@Preview(showBackground = true, device = Devices.TV_1080p)
-@Composable
-fun MovieCardPreview() {
-    MovieCard(
-        Movie(
-            1,
-            "Movie Title",
-            "Movie description",
-            Movie.url,
-
-            GenreTypes.Action.drawable,
-            "2 hours",
-            8.5f
-        )
-    )
 }

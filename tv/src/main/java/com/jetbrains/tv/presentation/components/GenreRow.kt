@@ -69,12 +69,13 @@ fun GenreRow(
 
                 MovieCard(
                     movie = movie,
+                    isFocused = isFocused,
                     modifier = Modifier
                         .focusable()
                         .onFocusChanged { state -> isFocused = state.isFocused }
                         .graphicsLayer(
                             scaleX = if (isFocused) 1.1f else 1f,
-                            scaleY = if (isFocused) 1.1f else 1f,
+                            scaleY = if (isFocused) 1.1f else 1f
                         ),
                     onClick = { onItemSelected(movie) }
                 )

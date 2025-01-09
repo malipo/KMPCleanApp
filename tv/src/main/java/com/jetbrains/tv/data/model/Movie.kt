@@ -11,7 +11,8 @@ data class Movie(
     var thumbnail: String = GenreTypes.Action.drawable,
     val media: String = url,
     val duration: String,
-    val rating: Float
+    val rating: Float,
+    var watchProgress: Float = 0f
 ) {
     companion object {
         const val url =
