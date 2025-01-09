@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -36,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -64,9 +66,15 @@ fun App() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
+    // Define custom width for navigation drawer
+    val drawerWidth = 250.dp // Adjust to your desired width
+
+    // Use ModalDrawer to control the open/close state
     ModalNavigationDrawer(
         drawerState = drawerState,
-        drawerContent = { SampleNavigationDrawer(navController, drawerState) }
+        drawerContent = {
+            SampleNavigationDrawer(navController, drawerState)
+        }
     ) {
         Scaffold(
             topBar = {
@@ -75,7 +83,7 @@ fun App() {
                     navigationIcon = {
                         IconButton(onClick = {
                             coroutineScope.launch {
-                                drawerState.open()
+                                drawerState.open() // Opens the drawer
                             }
                         }) {
                             Icon(imageVector = Icons.Default.Menu, contentDescription = "Open Drawer")
@@ -83,11 +91,13 @@ fun App() {
                     }
                 )
             },
-            content = {
+            content = { paddingValues ->
+                // Add padding to main content area based on drawer's state
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(it)
+                        .padding(start = if (drawerState.isOpen) drawerWidth else 0.dp)
+                        .padding(paddingValues)
                 ) {
                     NavHost(navController = navController, startDestination = Screens.Home()) {
                         composable(Screens.Home()) {
@@ -95,17 +105,8 @@ fun App() {
                                 navController.navigate(Screens.Details.withArgs(movie.id))
                             })
                         }
-                        composable(
-                            route = Screens.Details(),
-                            arguments = listOf(navArgument(DetailsScreenArgs.movieId) {
-                                type = NavType.IntType
-                            })
-                        ) { backStackEntry ->
-                            val movieId = backStackEntry.arguments?.getInt(DetailsScreenArgs.movieId) ?: 1
-                            DetailsScreen(
-                                movieId = movieId,
-                                onMovieSelected = {}
-                            )
+                        composable(Screens.Details()) {
+                            DetailsScreen(movieId = 1, onMovieSelected = {})
                         }
                         composable(Screens.Settings()) {
                             SettingsScreen()
@@ -123,7 +124,7 @@ fun App() {
 @Composable
 fun SampleNavigationDrawer(navController: NavController, drawerState: DrawerState) {
     var selectedIndex by remember { mutableStateOf(0) }
-    val coroutineScope = rememberCoroutineScope() // Use the appropriate CoroutineScope
+    val coroutineScope = rememberCoroutineScope()
 
     val items = listOf(
         "Home" to Icons.Default.Home,
@@ -135,6 +136,7 @@ fun SampleNavigationDrawer(navController: NavController, drawerState: DrawerStat
         Modifier
             .background(Color.DarkGray)
             .fillMaxHeight()
+            .width(250.dp) // Set the width of the drawer here
             .padding(12.dp)
             .selectableGroup(),
         horizontalAlignment = Alignment.Start,
@@ -167,7 +169,7 @@ fun SampleNavigationDrawer(navController: NavController, drawerState: DrawerStat
                                 }
                             }
                         }
-                        drawerState.close()
+                        drawerState.close() // Close the drawer after the item is selected
                     }
                 }
             )
